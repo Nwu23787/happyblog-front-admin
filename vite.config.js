@@ -27,7 +27,7 @@ export default defineConfig({
     hmr: true,
     port: 3001,
     proxy: {
-      "./api": {
+      "/api": {
         target: "http://localhost:8081/",
         secure: false,
         changeOrigin: true,

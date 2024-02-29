@@ -9,10 +9,22 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@kangc/v-md-editor": "^2.3.18",
+    "@wangeditor/editor": "^5.1.23",
+    "@wangeditor/editor-for-vue": "^5.1.12",
+    "axios": "^1.6.5",
     "element-plus": "^2.5.2",
+    "highlight.js": "^11.9.0",
+    "js-md5": "^0.8.3",
     "path": "^0.12.7",
+    "pinia": "^2.1.7",
+    "pinia-plugin-persistedstate": "^3.2.1",
+    "prismjs": "^1.29.0",
+    "sass": "^1.70.0",
+    "sass-loader": "^14.0.0",
     "serve": "^14.2.1",
     "vue": "^3.3.11",
+    "vue-cookies": "^1.8.3",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
