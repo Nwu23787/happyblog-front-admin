@@ -16,8 +16,12 @@ export const useUserInfoStore = defineStore(
     const updateUsername = async (nickName) => {
       userInfo.value.nickName = nickName;
     };
+    // 修改头像
+    const updateAvatar = async (avatar) => {
+      userInfo.value.avatar = avatar;
+    };
 
-    return { userInfo, getUserInfo, updateUsername };
+    return { userInfo, getUserInfo, updateUsername, updateAvatar };
   },
   {
     persist: true,

@@ -12,6 +12,7 @@ import { Plus } from "@element-plus/icons-vue";
 import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-light.css";
 import TextEditor from "@/components/TextEditor.vue";
+import { useUserInfoStore } from "@/store/index.js";
 
 // 博客列表数据
 const tableData = ref([]);
@@ -29,6 +30,10 @@ const userFilter = reactive({
   phoneFuzzy: "",
   nickNameFuzzy: "",
 });
+
+const userInfoStore = useUserInfoStore();
+// 获取用户信息
+const userInfo = ref(userInfoStore.userInfo);
 
 // 获取用户列表
 const getUserList = async () => {
@@ -92,7 +97,7 @@ const validatePass = (rule, value, callback) => {
 // 新增用户表单校验规则
 const addRules = reactive({
   nickName: [{ required: true, message: "请填写昵称！" }],
-  phone: [{ required: true, message: "请填写手机号！" }],
+  phone: [{ required: true, message: "请填写账号！" }],
   password: [{ required: true, message: "请填写密码！" }],
   confirmPassword: [
     { required: true, message: "请确认密码！" },
@@ -103,7 +108,7 @@ const addRules = reactive({
 // 修改用户表单校验规则
 const updateRules = reactive({
   nickName: [{ required: true, message: "请填写昵称！" }],
-  phone: [{ required: true, message: "请填写手机号！" }],
+  phone: [{ required: true, message: "请填写账号！" }],
   confirmPassword: [{ validator: validatePass, trigger: "blur" }],
 });
 
@@ -255,7 +260,7 @@ const deleteUser = async (userId) => {
           placeholder="支持模糊搜索"
         ></el-input>
       </el-form-item>
-      <el-form-item label="手机号">
+      <el-form-item label="账号">
         <el-input
           v-model="userFilter.phoneFuzzy"
           placeholder="支持模糊搜索"
@@ -265,7 +270,11 @@ const deleteUser = async (userId) => {
         <el-button type="danger" @click="searchUser">搜索</el-button>
       </el-form-item>
     </el-form>
-    <el-button type="danger" size="default" @click="openAddDialog"
+    <el-button
+      type="danger"
+      size="default"
+      @click="openAddDialog"
+      v-if="userInfo.roleType === 1"
       >新增账号</el-button
     >
 
@@ -289,7 +298,7 @@ const deleteUser = async (userId) => {
       <el-table-column label="用户信息" width="300">
         <template #default="scope">
           <div class="title">昵称：{{ scope.row.nickName }}</div>
-          <div class="categoryName">手机号：{{ scope.row.phone }}</div>
+          <div class="categoryName">账号：{{ scope.row.phone }}</div>
           <div class="nickname">职业：{{ scope.row.profession }}</div>
         </template>
       </el-table-column>
@@ -318,40 +327,43 @@ const deleteUser = async (userId) => {
       </el-table-column>
       <el-table-column label="操作" width="200">
         <template #default="scope">
-          <el-link
-            type="primary"
-            :underline="false"
-            @click="handleEdit(scope.row)"
-            >修改
-          </el-link>
-          <el-popconfirm
-            :title="scope.row.status ? '确认禁用吗？' : '确认启用吗'"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            :hide-after="0"
-            @confirm="forbidUser(scope.row)"
-            ><template #reference>
-              <el-link type="primary" :underline="false"
-                >{{ scope.row.status ? "禁用" : "启用" }}
-              </el-link>
-            </template>
-          </el-popconfirm>
-          <el-link
-            type="primary"
-            :underline="false"
-            @click="handleUpdatePassword(scope.row.userId)"
-            >修改密码
-          </el-link>
-          <el-popconfirm
-            title="确认删除吗？"
-            @confirm="deleteUser(scope.row.userId)"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-          >
-            <template #reference>
-              <el-link type="primary" :underline="false">删除 </el-link>
-            </template>
-          </el-popconfirm>
+          <span v-if="userInfo.roleType === 1">
+            <el-link
+              type="primary"
+              :underline="false"
+              @click="handleEdit(scope.row)"
+              >修改
+            </el-link>
+            <el-popconfirm
+              :title="scope.row.status ? '确认禁用吗？' : '确认启用吗'"
+              confirm-button-text="确认"
+              cancel-button-text="取消"
+              :hide-after="0"
+              @confirm="forbidUser(scope.row)"
+              ><template #reference>
+                <el-link type="primary" :underline="false"
+                  >{{ scope.row.status ? "禁用" : "启用" }}
+                </el-link>
+              </template>
+            </el-popconfirm>
+            <el-link
+              type="primary"
+              :underline="false"
+              @click="handleUpdatePassword(scope.row.userId)"
+              >修改密码
+            </el-link>
+            <el-popconfirm
+              title="确认删除吗？"
+              @confirm="deleteUser(scope.row.userId)"
+              confirm-button-text="确认"
+              cancel-button-text="取消"
+            >
+              <template #reference>
+                <el-link type="primary" :underline="false">删除 </el-link>
+              </template>
+            </el-popconfirm>
+          </span>
+          <span v-else>---</span>
         </template>
       </el-table-column>
     </el-table>
@@ -387,8 +399,8 @@ const deleteUser = async (userId) => {
       <el-form-item label="昵称" prop="nickName">
         <el-input v-model="addObj.nickName" placeholder="请输入昵称"></el-input>
       </el-form-item>
-      <el-form-item label="手机号" prop="phone">
-        <el-input v-model="addObj.phone" placeholder="请输入手机号"></el-input>
+      <el-form-item label="账号" prop="phone">
+        <el-input v-model="addObj.phone" placeholder="请输入账号"></el-input>
       </el-form-item>
       <el-form-item label="密码" prop="password" v-if="!addObj.userId">
         <el-input

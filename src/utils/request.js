@@ -4,7 +4,7 @@ import router from "../router";
 
 const httpRequest = axios.create({
   baseURL: "/api",
-  timeout: 600000,
+  timeout: 5000,
 });
 
 //请求拦截器

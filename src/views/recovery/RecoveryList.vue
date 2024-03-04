@@ -11,6 +11,7 @@ import { Plus } from "@element-plus/icons-vue";
 import hljs from "highlight.js";
 import "highlight.js/styles/atom-one-light.css";
 import { WarningFilled } from "@element-plus/icons-vue";
+import { useUserInfoStore } from "@/store/index.js";
 
 // 博客列表数据
 const tableData = ref([]);
@@ -22,6 +23,10 @@ const page = ref({
   pageNo: 1,
   pageSize: 10,
 });
+
+const userInfoStore = useUserInfoStore();
+// 获取用户信息
+const userInfo = ref(userInfoStore.userInfo);
 
 // 博客筛选
 const blogFilter = reactive({
@@ -142,26 +147,29 @@ const handleDelete = async (id) => {
       </el-table-column>
       <el-table-column label="操作" width="150">
         <template #default="scope">
-          <el-popconfirm
-            title="确认还原此博客吗？"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            @confirm="handleRecover(scope.row.blogId)"
-            ><template #reference>
-              <el-link type="primary" :underline="false">还原 </el-link>
-            </template>
-          </el-popconfirm>
-          <el-popconfirm
-            title="确认永久删除此博客吗？"
-            confirm-button-text="确认"
-            cancel-button-text="取消"
-            :icon="WarningFilled"
-            icon-color="#F56C6C"
-            @confirm="handleDelete(scope.row.blogId)"
-            ><template #reference>
-              <el-link type="primary" :underline="false">删除 </el-link>
-            </template>
-          </el-popconfirm>
+          <span v-if="scope.row.userId === userInfo.userId">
+            <el-popconfirm
+              title="确认还原此博客吗？"
+              confirm-button-text="确认"
+              cancel-button-text="取消"
+              @confirm="handleRecover(scope.row.blogId)"
+              ><template #reference>
+                <el-link type="primary" :underline="false">还原 </el-link>
+              </template>
+            </el-popconfirm>
+            <el-popconfirm
+              title="确认永久删除此博客吗？"
+              confirm-button-text="确认"
+              cancel-button-text="取消"
+              :icon="WarningFilled"
+              icon-color="#F56C6C"
+              @confirm="handleDelete(scope.row.blogId)"
+              ><template #reference>
+                <el-link type="primary" :underline="false">删除 </el-link>
+              </template>
+            </el-popconfirm>
+          </span>
+          <span v-else>---</span>
         </template>
       </el-table-column>
     </el-table>

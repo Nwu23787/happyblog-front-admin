@@ -191,6 +191,14 @@ const append = (data) => {
   specialObj.pBlogId = data.blogId;
 };
 
+// 新增文章表单验证规则
+const addBlogRules = ref({
+  title: [{ required: true, message: "标题不能为空！" }],
+});
+
+// 新增文章表单对象
+const addBlogFormRef = ref();
+
 // 回退
 const goBack = () => {
   showEditor.value = false;
@@ -199,20 +207,23 @@ const goBack = () => {
 };
 
 // 确认新增文章
-const confirmAdd = async () => {
-  console.log(specialObj);
-  await saveSpecialEssayAPI(specialObj);
-  ElMessage({
-    type: "success",
-    message: specialObj.blogId ? "修改成功" : "添加成功",
+const confirmAdd = () => {
+  addBlogFormRef.value.validate(async (valid) => {
+    if (valid) {
+      await saveSpecialEssayAPI(specialObj);
+      ElMessage({
+        type: "success",
+        message: specialObj.blogId ? "修改成功" : "添加成功",
+      });
+      // 关闭编辑器
+      setTimeout(() => {
+        goBack();
+        // 重新获取数据
+        getTreeInfo();
+        getSpecialList();
+      }, 1000);
+    }
   });
-  // 关闭编辑器
-  setTimeout(() => {
-    goBack();
-    // 重新获取数据
-    getTreeInfo();
-    getSpecialList();
-  }, 1000);
 };
 
 // 修改专题博客
@@ -465,8 +476,8 @@ const detailGoBack = () => {
     <div class="editor_body">
       <el-form
         :model="specialObj"
-        ref="addFormRef"
-        :rules="rules"
+        ref="addBlogFormRef"
+        :rules="addBlogRules"
         label-width="55px"
         :inline="true"
       >

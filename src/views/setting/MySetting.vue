@@ -14,7 +14,7 @@ import { useUserInfoStore } from "@/store/index.js";
 const userInfo = reactive({
   avatar: "", // 头像
   nickName: "", // 昵称
-  phone: "", // 手机号
+  phone: "", // 账号
   profession: "", // 职业
   editorType: 1, // 编辑器类型
   introduction: "", //简介
@@ -43,7 +43,7 @@ const handleFileChange = (file, fileList) => {
 // 校验规则
 const rules = ref({
   nickName: [{ required: true, message: "昵称不能为空" }],
-  phone: [{ required: true, message: "手机号不能为空" }],
+  phone: [{ required: true, message: "账号不能为空" }],
 });
 
 const formRef = ref();
@@ -61,6 +61,7 @@ const submitUserInfo = () => {
       // 刷新用户信息
       getUserInfo();
       userInfoStore.updateUsername(userInfo.nickName);
+      userInfoStore.updateAvatar(userInfo.avatar);
     }
   });
 };
@@ -171,10 +172,10 @@ const updatePassword = () => {
             placeholder="请输入昵称"
           ></el-input>
         </el-form-item>
-        <el-form-item label="手机号" prop="phone">
+        <el-form-item label="账号" prop="phone">
           <el-input
             v-model="userInfo.phone"
-            placeholder="请输入手机号"
+            placeholder="请输入账号"
           ></el-input>
         </el-form-item>
         <el-form-item label="密码">

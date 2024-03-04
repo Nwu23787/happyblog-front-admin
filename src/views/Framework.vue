@@ -75,6 +75,10 @@ const menuList = reactive([
   },
 ]);
 
+if (userInfoStore.userInfo.roleType != 1) {
+  menuList[2].children.pop();
+}
+
 //发布博客
 const publishBlog = () => {};
 
@@ -89,7 +93,7 @@ const avatarErrorHandler = () => {
 
 // 点击头部博客名跳转主页
 const toHome = () => {
-  router.push("/");
+  router.push("/blog/list");
 };
 
 // 退出登录
@@ -151,7 +155,7 @@ const closeDialog = () => {
   <div class="common-layout">
     <el-container class="container">
       <el-header class="header">
-        <div class="left" @click="toHome">HappyBlog</div>
+        <img src="@/assets/title.png" class="left" @click="toHome" />
         <div class="right">
           <span
             >欢迎回来，
@@ -164,7 +168,6 @@ const closeDialog = () => {
               </span>
               <template #dropdown>
                 <el-dropdown-menu>
-                  <el-dropdown-item>个人信息</el-dropdown-item>
                   <el-dropdown-item @click="logOut">退出</el-dropdown-item>
                 </el-dropdown-menu>
               </template>
@@ -174,7 +177,7 @@ const closeDialog = () => {
         <el-avatar
           class="avatar"
           @error="avatarErrorHandler"
-          :src="avatarSrc"
+          :src="'/api/file/getImage/' + userInfoStore.userInfo.avatar"
         />
       </el-header>
       <el-container>
@@ -260,7 +263,6 @@ const closeDialog = () => {
     margin-bottom: 20px;
     border-bottom: 1px solid #afadad;
     .left {
-      font-size: 30px;
       position: absolute;
       top: 50%;
       left: 10px;

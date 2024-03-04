@@ -4,7 +4,7 @@ const routes = [
     name: "home",
     path: "/",
     component: () => import("../views/Framework.vue"),
-    redirect: "/blog/list",
+    redirect: "/login",
     children: [
       // 博客
       {
