@@ -40,7 +40,6 @@ const getUserList = async () => {
   const res = await getUserListAPI({ ...page.value, ...userFilter });
   tableData.value = res.list;
   totalBlogCount.value = res.totalCount;
-  console.log(res);
 };
 
 onMounted(() => {
@@ -174,13 +173,11 @@ const openAddDialog = () => {
     avatar: "",
     introduction: "",
   });
-  console.log(addFormRef);
   showAddDialog.value = true;
 };
 
 // 禁用用户
 const forbidUser = async (obj) => {
-  console.log(obj);
   await updateStatusAPI(obj.userId, obj.status ? 0 : 1);
   getUserList();
 };

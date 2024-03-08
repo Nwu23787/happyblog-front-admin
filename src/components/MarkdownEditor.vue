@@ -23,12 +23,8 @@ const text = ref(props.markdownText);
 // 上传图片
 const handleUploadImage = async (event, insertImage, files) => {
   // 拿到 files 之后上传到文件服务器，然后向编辑框中插入对应的内容
-  console.log(event);
-  console.log(insertImage);
-  console.log(files[0]);
   // 将图片上传到服务器
   const res = await uploadImgAPI(files[0], 1);
-  console.log(res);
 
   insertImage({
     url: "/api/file/getImage/" + res.fileName,

@@ -21,7 +21,18 @@ export const useUserInfoStore = defineStore(
       userInfo.value.avatar = avatar;
     };
 
-    return { userInfo, getUserInfo, updateUsername, updateAvatar };
+    // 清除用户信息
+    const removeUserInfo = () => {
+      userInfo.value = {};
+    };
+
+    return {
+      userInfo,
+      getUserInfo,
+      updateUsername,
+      updateAvatar,
+      removeUserInfo,
+    };
   },
   {
     persist: true,

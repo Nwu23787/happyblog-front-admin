@@ -38,7 +38,6 @@ const getBlogList = async () => {
   const res = await loadRecoveryListAPI({ ...page.value, ...blogFilter });
   tableData.value = res.list;
   totalBlogCount.value = res.totalCount;
-  console.log(res);
 };
 
 onMounted(() => {
@@ -203,5 +202,16 @@ const handleDelete = async (id) => {
     font-size: 12px;
     margin: 0px 5px;
   }
+}
+
+.image-slot {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  background: var(--el-fill-color-light);
+  color: var(--el-text-color-secondary);
+  font-size: 14px;
 }
 </style>

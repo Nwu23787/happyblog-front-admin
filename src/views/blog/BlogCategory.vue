@@ -20,7 +20,6 @@ const categoryList = ref([]);
 const getCategoryList = async () => {
   const res = await getCategoryListAPI();
   categoryList.value = res;
-  console.log(res);
 };
 
 // 新增分类对话框显示
@@ -71,8 +70,6 @@ const handleFileChange = (file, fileList) => {
 const confirmAdd = () => {
   //验证表单数据合法性
   addFormRef.value.validate(async (valid, msg) => {
-    console.log(addCategoryObj);
-    console.log(msg);
     if (valid) {
       await addCategoeyAPI(addCategoryObj.value);
       // 如果不存在categoryId，则为新增
@@ -142,13 +139,11 @@ onMounted(() => {
 
 // 上移
 const moveUp = async (index) => {
-  console.log(index);
   if (index) {
     const tempList = [...categoryList.value];
     let temp = { ...tempList[index] };
     tempList[index] = { ...tempList[index - 1] };
     tempList[index - 1] = { ...temp };
-    console.log("交换后", categoryList);
     // 发起请求
     await sortCategoryAPI(JSON.stringify(tempList));
     //刷新数据
@@ -163,13 +158,11 @@ const moveUp = async (index) => {
 
 // 下移
 const moveDown = async (index) => {
-  console.log(index);
   if (index < categoryList.value.length - 1) {
     const tempList = [...categoryList.value];
     let temp = { ...tempList[index] };
     tempList[index] = { ...tempList[index + 1] };
     tempList[index + 1] = { ...temp };
-    console.log("交换后", categoryList);
     // 发起请求
     await sortCategoryAPI(JSON.stringify(tempList));
     //刷新数据

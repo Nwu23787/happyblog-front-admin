@@ -70,7 +70,6 @@ const rules = reactive({
 // 获取系统设置
 const getSysSetting = async () => {
   const res = await getSysSettingAPI();
-  console.log(res);
   form.value = res;
 };
 

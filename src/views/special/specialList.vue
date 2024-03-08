@@ -24,7 +24,6 @@ const page = reactive({});
 const getSpecialList = async () => {
   const res = await getSpecialListAPI();
   specialList.value = res.list;
-  console.log(res);
 };
 
 const userInfoStore = useUserInfoStore();
@@ -94,15 +93,12 @@ const updateSpecialBtn = (data) => {
     addObj.categoryId = data.categoryId;
     // 添加默认封面文件
     if (addObj.cover) {
-      console.log(1234);
       addSpecialFileList.value.push({
         name: "cover",
         url: "/api/file/getImage/" + addObj.cover,
       });
     }
   });
-
-  console.log(addObj);
 };
 
 // 关闭专题弹窗回调
@@ -110,7 +106,6 @@ const beforeCloseDialog = () => {
   // 重置表单
   addFormRef.value.resetFields();
   delete addObj.categoryId;
-  console.log("重置", addObj);
   // 清空默认上传文件
   addSpecialFileList.value = [];
 };
@@ -185,7 +180,6 @@ const initSpecialObj = () => {
 
 // 新增文章
 const append = (data) => {
-  console.log("ada", data);
   showEditor.value = true;
   specialObj.categoryId = data.categoryId;
   specialObj.pBlogId = data.blogId;
@@ -228,7 +222,6 @@ const confirmAdd = () => {
 
 // 修改专题博客
 const updateSpecial = async (data) => {
-  console.log(data);
   const res = await getBlogByIdAPI(data.blogId);
   specialObj.title = data.title;
   specialObj.categoryId = data.categoryId;
@@ -243,7 +236,6 @@ const updateSpecial = async (data) => {
 
 // 删除专题博客
 const delSpecialBlog = async (data) => {
-  console.log(data);
   if (data.children) {
     return ElMessage({
       type: "error",
@@ -274,7 +266,6 @@ const nodeDrop = async (draggingNode, dropNode, dropType, ev) => {
     // 放在目标节点的前后，就是和目标节点同级
     parentNode = dropNode.parent;
   }
-  console.log(parentNode);
   const blogId = draggingNode.data.blogId;
   const pBlogId = parentNode.data.blogId;
   const blogIds = [];
@@ -300,7 +291,6 @@ const blogDetail = ref("");
 const handlePreview = async (id) => {
   const res = await getBlogByIdAPI(id);
   blogDetail.value = res;
-  console.log(res);
   showDetail.value = true;
   nextTick(() => {
     let blocks = document.querySelectorAll("pre code");

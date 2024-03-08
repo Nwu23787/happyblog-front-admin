@@ -103,6 +103,8 @@ const logOut = async () => {
     type: "success",
     message: "已退出",
   });
+  // 清除用户信息
+  userInfoStore.removeUserInfo();
   router.push("/login");
 };
 
@@ -123,7 +125,6 @@ const handlePublish = async () => {
   timer = setInterval(async () => {
     const res = await checkProgressAPI();
     Object.assign(progressObj, res);
-    console.log(res);
   }, 500);
 };
 
@@ -138,7 +139,6 @@ watch(progressObj, () => {
     // 停止定时器
     clearInterval(timer);
   }
-  console.log(11);
 });
 
 // 关闭对话框

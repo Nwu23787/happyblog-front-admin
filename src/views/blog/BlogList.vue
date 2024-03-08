@@ -45,7 +45,6 @@ const getBlogList = async () => {
   const res = await getBlogListAPI({ ...page.value, ...blogFilter });
   tableData.value = res.list;
   totalBlogCount.value = res.totalCount;
-  console.log(res);
 };
 
 //博客分类列表
@@ -72,8 +71,6 @@ const getBlogType = (type) => {
 // 博客筛选搜索
 const searchBlog = () => {
   getBlogList();
-  console.log(blogFilter);
-  console.log(blogCateGoryList.value);
 };
 
 // 新增博客对象
@@ -162,7 +159,6 @@ const handleExceed = (files) => {
 const handleAvatarSuccess = (a, b) => {
   if (a.code === 200) {
     blogObj.cover = a.data.fileName;
-    console.log(blogObj);
   }
 };
 
@@ -187,9 +183,7 @@ const handleTagClose = (tag) => {
 // 自定义指令，解决input框第一次之后不能自动聚焦的问题
 const vFocus = {
   mounted: (el) => {
-    console.log(el.focus);
     el.focus();
-    console.log(1234);
   },
 };
 
@@ -266,7 +260,6 @@ const handleFileChange = (file, fileList) => {
 
 const handleDelete = async (id) => {
   const res = await recoveryBlogByIdAPI(id);
-  console.log(res);
   // 重新获取列表
   getBlogList();
 };
@@ -292,7 +285,6 @@ watch(
         markdownContent: blogObj.markdownContent,
       });
       if (!blogObj.blogId) {
-        console.log(123);
         // 没有id，加上
         blogObj.blogId = res;
       }
@@ -308,7 +300,6 @@ const blogDetail = ref("");
 const handlePreview = async (id) => {
   const res = await getBlogByIdAPI(id);
   blogDetail.value = res.content;
-  console.log(res);
   showDetail.value = true;
   nextTick(() => {
     let blocks = document.querySelectorAll("pre code");
@@ -380,7 +371,7 @@ const detailGoBack = () => {
           </el-image>
         </template>
       </el-table-column>
-      <el-table-column label="文章信息" width="300">
+      <el-table-column label="文章信息" width="280">
         <template #default="scope">
           <div class="title">标题：{{ scope.row.title }}</div>
           <div class="categoryName">分类：{{ scope.row.categoryName }}</div>
@@ -406,7 +397,7 @@ const detailGoBack = () => {
           </span>
         </template>
       </el-table-column>
-      <el-table-column label="时间" width="260">
+      <el-table-column label="时间" width="230">
         <template #default="scope">
           <div class="createTime">创建时间：{{ scope.row.createTime }}</div>
           <div class="lastUpdateTime">
