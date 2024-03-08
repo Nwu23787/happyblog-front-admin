@@ -207,7 +207,7 @@ const confirmAddBlog = () => {
       //消息提示
       ElMessage({
         type: "success",
-        message: "新增成功！",
+        message: blogObj.blogId ? "修改成功" : "新增成功！",
       });
       // 重新获取列表
       getBlogList();
@@ -216,6 +216,8 @@ const confirmAddBlog = () => {
       confirmFormRef.value.resetFields();
       // 清空封面上传数据
       fileList.value = [];
+      // 重置博客对象
+      resetBlogObj();
       // 清空博客内容数据
       blogObj.content = "";
       blogObj.markdownContent = "";
