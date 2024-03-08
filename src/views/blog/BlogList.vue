@@ -102,6 +102,7 @@ const resetBlogObj = () => {
     type: 0, //博客类型
     reprintUrl: null, //转载地址
     allowComment: 1, //是否允许评论
+    blogId: null,
   });
 };
 
@@ -117,6 +118,7 @@ const addBlog = () => {
 const goBack = () => {
   showList.value = true;
   resetBlogObj();
+  fileList.value = [];
   // 重新获取数据
   getBlogList();
 };
@@ -450,7 +452,9 @@ const detailGoBack = () => {
   <div class="editor" v-else-if="!showList && !showDetail">
     <el-page-header @back="goBack" class="editor_header">
       <template #content>
-        <span class="text-large font-600 mr-3"> 新增博客 </span>
+        <span class="text-large font-600 mr-3">
+          {{ blogObj.blogId ? "修改博客" : "新增博客" }}
+        </span>
       </template>
     </el-page-header>
     <div class="editor_body">
