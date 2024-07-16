@@ -74,12 +74,15 @@ onMounted(() => {
 </script>
 
 <template>
+  
   <div class="login_body">
+    <img src="../assets/bgImage.jpg"></img>
     <div class="login_panel">
       <h2>用户登录</h2>
       <el-form :model="form" size="large" :rules="rules" ref="loginFormRef">
         <el-form-item prop="username">
           <el-input v-model="form.username" placeholder="请输入账号" clearable>
+            
             <template #prefix>
               <span class="iconfont icon-account"> </span>
             </template>
@@ -125,12 +128,19 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 .login_body {
-  position: relative;
+  position: absolute;
   width: 100%;
   height: 100vh;
   background-size: cover;
   background-position: center;
-  background-image: url("../assets/bgImage.jpg");
+  background-image: url("../assets/bgImage (2).jpg");
+  z-index:1;
+  img{
+  position: absolute;
+    width:100%;
+    height:100%;
+    z-index:-999;
+  }
   .login_panel {
     position: absolute;
     text-align: center;

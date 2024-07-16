@@ -1,0 +1,22 @@
+@import 'common.scss';
+
+.home-body {
+  display: flex;
+
+  .title a {
+    font-size: 16px;
+  }
+
+  .container {
+    background: #fff;
+    flex: 1;
+    padding: 10px 20px;
+  }
+
+  .right {
+    margin-left: 10px;
+    width: 300px;
+    background: #fff;
+    padding: 10px;
+  }
+}

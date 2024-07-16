@@ -1,0 +1,59 @@
+@import 'common.scss';
+
+.user-container {
+  padding: 0px;
+
+  .user-item {
+    display: flex;
+    align-items: flex-start;
+    background: #fff;
+    margin-bottom: 20px;
+    margin-top: 0px;
+    padding: 10px 20px;
+    border-radius: 5px;
+
+    .user-icon {
+      width: 200px;
+      height: 200px;
+      background: #ddd;
+      border-radius: 100px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+
+      img {
+        max-width: 100%;
+      }
+    }
+
+    .user-info {
+      display: block;
+      padding-top: 20px;
+      margin-left: 20px;
+
+      span {
+        color: #0b1c2c;
+        display: inline-block;
+        font-size: 14px;
+        word-wrap: break-word;
+        word-break: break-all;
+        white-space: normal;
+      }
+
+      .blog-count {
+        margin-left: 20px;
+        width: 100px;
+      }
+
+      .introduction {
+        margin-top: 10px;
+        font-size: 14px;
+
+        img {
+          max-width: 100%;
+        }
+      }
+    }
+  }
+}

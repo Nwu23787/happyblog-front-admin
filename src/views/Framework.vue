@@ -25,6 +25,11 @@ const menuList = reactive([
         index: "1-2",
         path: "/blog/category",
       },
+      // {
+      //   title:'测试',
+      //   index:'1-3',
+      //   path:'/blog/demo'
+      // }
     ],
   },
   {

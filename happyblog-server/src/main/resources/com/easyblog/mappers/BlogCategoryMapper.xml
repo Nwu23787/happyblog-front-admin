@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.happyblog.mappers.BlogCategoryMapper">
+
+    <!--实体映射-->
+    <resultMap id="base_result_map" type="com.happyblog.entity.po.BlogCategory">
+        <!--分类ID-->
+        <id column="category_id" property="categoryId"/>
+        <!--封面-->
+        <result column="cover" property="cover"/>
+        <!--分类名称-->
+        <result column="category_name" property="categoryName"/>
+        <!--分类描述-->
+        <result column="category_desc" property="categoryDesc"/>
+        <!--0:博客分类  1:专题-->
+        <result column="category_type" property="categoryType"/>
+        <!--用户ID-->
+        <result column="user_id" property="userId"/>
+        <!--昵称-->
+        <result column="nick_name" property="nickName"/>
+        <!--排序-->
+        <result column="sort" property="sort"/>
+    </resultMap>
+
+
+    <!-- 通用查询结果列-->
+    <sql id="base_column_list">
+		 category_id,cover,category_name,category_desc,category_type,user_id,nick_name,sort
+	</sql>
+
+    <sql id="base_condition_filed">
+        <if test="query.categoryId != null">
+            and category_id = #{query.categoryId}
+        </if>
+        <if test="query.cover != null and query.cover!=''">
+            and cover = #{query.cover}
+        </if>
+        <if test="query.categoryName != null and query.categoryName!=''">
+            and category_name = #{query.categoryName}
+        </if>
+        <if test="query.categoryDesc != null and query.categoryDesc!=''">
+            and category_desc = #{query.categoryDesc}
+        </if>
+        <if test="query.categoryType != null">
+            and category_type = #{query.categoryType}
+        </if>
+        <if test="query.userId != null">
+            and user_id = #{query.userId}
+        </if>
+        <if test="query.nickName != null and query.nickName!=''">
+            and nick_name = #{query.nickName}
+        </if>
+        <if test="query.sort != null">
+            and sort = #{query.sort}
+        </if>
+    </sql>
+    <!-- 通用条件列-->
+    <sql id="base_condition">
+        <where>
+            <include refid="base_condition_filed"/>
+        </where>
+    </sql>
+
+    <!-- 通用查询条件列-->
+    <sql id="query_condition">
+        <where>
+            <include refid="base_condition_filed"/>
+            <if test="query.coverFuzzy!= null  and query.coverFuzzy!=''">
+                and cover like concat('%', #{query.coverFuzzy}, '%')
+            </if>
+            <if test="query.categoryNameFuzzy!= null  and query.categoryNameFuzzy!=''">
+                and category_name like concat('%', #{query.categoryNameFuzzy}, '%')
+            </if>
+            <if test="query.categoryDescFuzzy!= null  and query.categoryDescFuzzy!=''">
+                and category_desc like concat('%', #{query.categoryDescFuzzy}, '%')
+            </if>
+            <if test="query.nickNameFuzzy!= null  and query.nickNameFuzzy!=''">
+                and nick_name like concat('%', #{query.nickNameFuzzy}, '%')
+            </if>
+            <if test="query.queryHaveBlog!=null">
+                and (select count(1) from blog b where status=1 and del_type = 1 and b.category_id = c.category_id)>0
+            </if>
+        </where>
+    </sql>
+
+    <!-- 查询集合-->
+    <select id="selectList" resultMap="base_result_map">
+        SELECT
+        <include refid="base_column_list"/>
+        <if test="query.queryBlogCount!=null and query.queryBlogCount">
+            ,(select count(1) from blog b where status=1 and del_type = 1 and b.category_id = c.category_id) blogCount
+        </if>
+        FROM blog_category c
+        <include refid="query_condition"/>
+        <if test="query.orderBy!=null">
+            order by ${query.orderBy}
+        </if>
+        <if test="query.simplePage!=null">
+            limit #{query.simplePage.start},#{query.simplePage.end}
+        </if>
+    </select>
+
+    <!-- 查询数量-->
+    <select id="selectCount" resultType="java.lang.Integer">
+        SELECT count(1) FROM blog_category c
+        <include refid="query_condition"/>
+    </select>
+
+    <!-- 插入 （匹配有值的字段）-->
+    <insert id="insert" parameterType="com.happyblog.entity.po.BlogCategory">
+        <selectKey keyProperty="bean.categoryId" resultType="Integer" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO blog_category
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bean.cover != null">
+                cover,
+            </if>
+            <if test="bean.categoryName != null">
+                category_name,
+            </if>
+            <if test="bean.categoryDesc != null">
+                category_desc,
+            </if>
+            <if test="bean.categoryType != null">
+                category_type,
+            </if>
+            <if test="bean.userId != null">
+                user_id,
+            </if>
+            <if test="bean.nickName != null">
+                nick_name,
+            </if>
+            <if test="bean.sort != null">
+                sort,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bean.cover!=null">
+                #{bean.cover},
+            </if>
+            <if test="bean.categoryName!=null">
+                #{bean.categoryName},
+            </if>
+            <if test="bean.categoryDesc!=null">
+                #{bean.categoryDesc},
+            </if>
+            <if test="bean.categoryType!=null">
+                #{bean.categoryType},
+            </if>
+            <if test="bean.userId!=null">
+                #{bean.userId},
+            </if>
+            <if test="bean.nickName!=null">
+                #{bean.nickName},
+            </if>
+            <if test="bean.sort!=null">
+                #{bean.sort},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 插入或者更新 （匹配有值的字段）-->
+    <insert id="insertOrUpdate" parameterType="com.happyblog.entity.po.BlogCategory">
+        INSERT INTO blog_category
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bean.categoryId != null">
+                category_id,
+            </if>
+            <if test="bean.cover != null">
+                cover,
+            </if>
+            <if test="bean.categoryName != null">
+                category_name,
+            </if>
+            <if test="bean.categoryDesc != null">
+                category_desc,
+            </if>
+            <if test="bean.categoryType != null">
+                category_type,
+            </if>
+            <if test="bean.userId != null">
+                user_id,
+            </if>
+            <if test="bean.nickName != null">
+                nick_name,
+            </if>
+            <if test="bean.sort != null">
+                sort,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bean.categoryId!=null">
+                #{bean.categoryId},
+            </if>
+            <if test="bean.cover!=null">
+                #{bean.cover},
+            </if>
+            <if test="bean.categoryName!=null">
+                #{bean.categoryName},
+            </if>
+            <if test="bean.categoryDesc!=null">
+                #{bean.categoryDesc},
+            </if>
+            <if test="bean.categoryType!=null">
+                #{bean.categoryType},
+            </if>
+            <if test="bean.userId!=null">
+                #{bean.userId},
+            </if>
+            <if test="bean.nickName!=null">
+                #{bean.nickName},
+            </if>
+            <if test="bean.sort!=null">
+                #{bean.sort},
+            </if>
+        </trim>
+        on DUPLICATE key update
+        <trim prefix="" suffix="" suffixOverrides=",">
+            <if test="bean.cover!=null">
+                cover = VALUES(cover),
+            </if>
+            <if test="bean.categoryName!=null">
+                category_name = VALUES(category_name),
+            </if>
+            <if test="bean.categoryDesc!=null">
+                category_desc = VALUES(category_desc),
+            </if>
+            <if test="bean.categoryType!=null">
+                category_type = VALUES(category_type),
+            </if>
+            <if test="bean.userId!=null">
+                user_id = VALUES(user_id),
+            </if>
+            <if test="bean.nickName!=null">
+                nick_name = VALUES(nick_name),
+            </if>
+            <if test="bean.sort!=null">
+                sort = VALUES(sort),
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 添加 （批量插入）-->
+    <insert id="insertBatch" parameterType="com.happyblog.entity.po.BlogCategory" useGeneratedKeys="true" keyProperty="categoryId">
+        INSERT INTO blog_category(cover,category_name,category_desc,category_type,user_id,nick_name,sort)values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.cover},#{item.categoryName},#{item.categoryDesc},#{item.categoryType},#{item.userId},#{item.nickName},#{item.sort}
+            )
+        </foreach>
+    </insert>
+
+    <!-- 批量新增修改 （批量插入）-->
+    <insert id="insertOrUpdateBatch" parameterType="com.happyblog.entity.po.BlogCategory">
+        INSERT INTO blog_category(cover,category_name,category_desc,category_type,user_id,nick_name,sort)values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.cover},#{item.categoryName},#{item.categoryDesc},#{item.categoryType},#{item.userId},#{item.nickName},#{item.sort}
+            )
+        </foreach>
+        on DUPLICATE key update
+        cover = VALUES(cover),
+        category_name = VALUES(category_name),
+        category_desc = VALUES(category_desc),
+        category_type = VALUES(category_type),
+        user_id = VALUES(user_id),
+        nick_name = VALUES(nick_name),
+        sort = VALUES(sort)
+    </insert>
+
+    <!-- 根据CategoryId修改-->
+    <update id="updateByCategoryId" parameterType="com.happyblog.entity.po.BlogCategory">
+        UPDATE blog_category
+        <set>
+            <if test="bean.cover != null">
+                cover = #{bean.cover},
+            </if>
+            <if test="bean.categoryName != null">
+                category_name = #{bean.categoryName},
+            </if>
+            <if test="bean.categoryDesc != null">
+                category_desc = #{bean.categoryDesc},
+            </if>
+            <if test="bean.categoryType != null">
+                category_type = #{bean.categoryType},
+            </if>
+            <if test="bean.userId != null">
+                user_id = #{bean.userId},
+            </if>
+            <if test="bean.nickName != null">
+                nick_name = #{bean.nickName},
+            </if>
+            <if test="bean.sort != null">
+                sort = #{bean.sort},
+            </if>
+        </set>
+        where category_id=#{categoryId}
+    </update>
+
+    <!-- 根据CategoryId删除-->
+    <delete id="deleteByCategoryId">
+		delete from blog_category where category_id=#{categoryId}
+	</delete>
+
+    <!-- 根据PrimaryKey获取对象-->
+    <select id="selectByCategoryId" resultMap="base_result_map">
+        select
+        <include refid="base_column_list"/>,(select count(1) from blog b where status=1 and b.category_id = c.category_id) blogCount
+        from blog_category c where category_id=#{categoryId}
+    </select>
+
+</mapper>

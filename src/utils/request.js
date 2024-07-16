@@ -33,7 +33,7 @@ httpRequest.interceptors.response.use(
         type: "error",
         message: "身份验证失败，请重新登陆",
       });
-      // router.push("/login");
+      router.push("/login");
       return data;
     } else {
       ElMessage({

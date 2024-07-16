@@ -1,0 +1,124 @@
+@import 'blog.detail.scss';
+
+.blog-special-list {
+  width: 300px;
+  min-height: calc(100vh - 160px);
+  border-right: 1px solid #ddd;
+  background: #fff;
+  box-sizing: border-box;
+
+  .blog-special {
+    display: flex;
+    padding: 10px 0px 0px 10px;
+
+    .category-image {
+      width: 50px;
+      height: 50px;
+      background: #ddd;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      float: left;
+
+      img {
+        border-radius: 2px;
+        max-width: 100%;
+      }
+    }
+
+    .category-info {
+      margin-left: 5px;
+      flex: 1;
+      font-size: 14px;
+
+      .category-title {
+        max-width: 100%;
+        font-size: 15px;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        -o-text-overflow: ellipsis;
+
+        a {
+          font-size: 18px;
+          font-weight: 400;
+        }
+      }
+
+      .blog-count {
+        font-size: 13px;
+        margin-top: 5px;
+        color: #919da9;
+      }
+    }
+  }
+
+  .category-desc {
+    padding-left: 10px;
+    font-size: 13px;
+    color: #3d3d3d;
+    max-width: 100%;
+    margin-top: 10px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+  }
+
+  .blog-list {
+    margin-top: 10px;
+    max-height: 100%;
+  }
+}
+
+.container {
+  position: relative;
+}
+
+#right-container {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  width: 250px;
+  background: #fff;
+  border: 1px solid #ddd;
+  box-shadow: -3px 6px 5px #ddd;
+
+  .toc-title {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    border-bottom: 1px solid #ddd;
+
+    .icon-arrow {
+      cursor: pointer;
+      width: 10px;
+      height: 10px;
+      display: inline-block;
+      margin-right: 5px;
+      float: right;
+    }
+
+    .arrow-right {
+      background-image: url("arrow-right-line.png");
+    }
+
+    .arrow-down {
+      background-image: url("arrow-down-line.png");
+    }
+  }
+
+  #toc {
+    width: 100%;
+    background: #fff;
+    border-radius: 4px;
+    max-height: 500px;
+    overflow: auto;
+
+    .no-data {
+      line-height: 40px;
+    }
+  }
+}

@@ -23,6 +23,11 @@ const routes = [
             path: "category",
             component: () => import("@/views/blog/BlogCategory.vue"),
           },
+          // {
+          //   name: "测试",
+          //   path: "demo",
+          //   component: () => import("@/views/blog/demo.vue"),
+          // },
         ],
       },
       // 专题

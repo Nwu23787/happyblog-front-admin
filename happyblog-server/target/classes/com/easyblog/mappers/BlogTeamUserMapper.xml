@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.happyblog.mappers.BlogTeamUserMapper">
+
+    <!--实体映射-->
+    <resultMap id="base_result_map" type="com.happyblog.entity.po.BlogTeamUser">
+        <!--用户ID-->
+        <id column="user_id" property="userId"/>
+        <!--昵称-->
+        <result column="nick_name" property="nickName"/>
+        <!--头像-->
+        <result column="avatar" property="avatar"/>
+        <!--手机号-->
+        <result column="phone" property="phone"/>
+        <!--密码-->
+        <result column="password" property="password"/>
+        <!--职业-->
+        <result column="profession" property="profession"/>
+        <!--简介-->
+        <result column="introduction" property="introduction"/>
+        <!--0:富文本 1:markdown编辑器-->
+        <result column="editor_type" property="editorType"/>
+        <!--0:普通用户 1:超级管理员-->
+        <result column="role_type" property="roleType"/>
+        <!--0:禁用 1:启用-->
+        <result column="status" property="status"/>
+        <!--创建时间-->
+        <result column="create_time" property="createTime"/>
+        <!--最后登录时间-->
+        <result column="last_login_time" property="lastLoginTime"/>
+    </resultMap>
+
+
+    <!-- 通用查询结果列-->
+    <sql id="base_column_list">
+        user_id
+        ,nick_name,avatar,phone,password,profession,introduction,editor_type,role_type,status,create_time,last_login_time
+    </sql>
+
+    <sql id="base_condition_filed">
+        <if test="query.userId != null">
+            and user_id = #{query.userId}
+        </if>
+        <if test="query.nickName != null and query.nickName!=''">
+            and nick_name = #{query.nickName}
+        </if>
+        <if test="query.avatar != null and query.avatar!=''">
+            and avatar = #{query.avatar}
+        </if>
+        <if test="query.phone != null and query.phone!=''">
+            and phone = #{query.phone}
+        </if>
+        <if test="query.password != null and query.password!=''">
+            and password = #{query.password}
+        </if>
+        <if test="query.profession != null and query.profession!=''">
+            and profession = #{query.profession}
+        </if>
+        <if test="query.introduction != null and query.introduction!=''">
+            and introduction = #{query.introduction}
+        </if>
+        <if test="query.editorType != null">
+            and editor_type = #{query.editorType}
+        </if>
+        <if test="query.roleType != null">
+            and role_type = #{query.roleType}
+        </if>
+        <if test="query.status != null">
+            and status = #{query.status}
+        </if>
+        <if test="query.createTime != null and query.createTime!=''">
+            <![CDATA[ and  create_time=str_to_date(#{query.createTime}, '%Y-%m-%d') ]]>
+        </if>
+        <if test="query.lastLoginTime != null and query.lastLoginTime!=''">
+            <![CDATA[ and  last_login_time=str_to_date(#{query.lastLoginTime}, '%Y-%m-%d') ]]>
+        </if>
+    </sql>
+    <!-- 通用条件列-->
+    <sql id="base_condition">
+        <where>
+            <include refid="base_condition_filed"/>
+        </where>
+    </sql>
+
+    <!-- 通用查询条件列-->
+    <sql id="query_condition">
+        <where>
+            <include refid="base_condition_filed"/>
+            <if test="query.nickNameFuzzy!= null  and query.nickNameFuzzy!=''">
+                and nick_name like concat('%', #{query.nickNameFuzzy}, '%')
+            </if>
+            <if test="query.avatarFuzzy!= null  and query.avatarFuzzy!=''">
+                and avatar like concat('%', #{query.avatarFuzzy}, '%')
+            </if>
+            <if test="query.phoneFuzzy!= null  and query.phoneFuzzy!=''">
+                and phone like concat('%', #{query.phoneFuzzy}, '%')
+            </if>
+            <if test="query.passwordFuzzy!= null  and query.passwordFuzzy!=''">
+                and password like concat('%', #{query.passwordFuzzy}, '%')
+            </if>
+            <if test="query.professionFuzzy!= null  and query.professionFuzzy!=''">
+                and profession like concat('%', #{query.professionFuzzy}, '%')
+            </if>
+            <if test="query.introductionFuzzy!= null  and query.introductionFuzzy!=''">
+                and introduction like concat('%', #{query.introductionFuzzy}, '%')
+            </if>
+            <if test="query.createTimeStart!= null and query.createTimeStart!=''">
+                <![CDATA[ and  create_time>=str_to_date(#{query.createTimeStart}, '%Y-%m-%d') ]]>
+            </if>
+            <if test="query.createTimeEnd!= null and query.createTimeEnd!=''">
+                <![CDATA[ and  create_time< date_sub(str_to_date(#{query.createTimeEnd},'%Y-%m-%d'),interval -1 day) ]]>
+            </if>
+            <if test="query.lastLoginTimeStart!= null and query.lastLoginTimeStart!=''">
+                <![CDATA[ and  last_login_time>=str_to_date(#{query.lastLoginTimeStart}, '%Y-%m-%d') ]]>
+            </if>
+            <if test="query.lastLoginTimeEnd!= null and query.lastLoginTimeEnd!=''">
+                <![CDATA[ and  last_login_time< date_sub(str_to_date(#{query.lastLoginTimeEnd},'%Y-%m-%d'),interval -1 day) ]]>
+            </if>
+        </where>
+    </sql>
+
+    <!-- 查询集合-->
+    <select id="selectList" resultMap="base_result_map">
+        SELECT
+        <include refid="base_column_list"/>
+        <if test="query.queryBlogCount!=null and query.queryBlogCount">
+            ,(select count(1) from blog b where b.user_id = u.user_id and b.status = 1) blogCount
+        </if>
+        FROM blog_team_user u
+        <include refid="query_condition"/>
+        <if test="query.orderBy!=null">
+            order by ${query.orderBy}
+        </if>
+        <if test="query.simplePage!=null">
+            limit #{query.simplePage.start},#{query.simplePage.end}
+        </if>
+    </select>
+
+    <!-- 查询数量-->
+    <select id="selectCount" resultType="java.lang.Integer">
+        SELECT count(1) FROM blog_team_user
+        <include refid="query_condition"/>
+    </select>
+
+    <!-- 插入 （匹配有值的字段）-->
+    <insert id="insert" parameterType="com.happyblog.entity.po.BlogTeamUser">
+        <selectKey keyProperty="bean.userId" resultType="Integer" order="AFTER">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        INSERT INTO blog_team_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bean.nickName != null">
+                nick_name,
+            </if>
+            <if test="bean.avatar != null">
+                avatar,
+            </if>
+            <if test="bean.phone != null">
+                phone,
+            </if>
+            <if test="bean.password != null">
+                password,
+            </if>
+            <if test="bean.profession != null">
+                profession,
+            </if>
+            <if test="bean.introduction != null">
+                introduction,
+            </if>
+            <if test="bean.editorType != null">
+                editor_type,
+            </if>
+            <if test="bean.roleType != null">
+                role_type,
+            </if>
+            <if test="bean.status != null">
+                status,
+            </if>
+            <if test="bean.createTime != null">
+                create_time,
+            </if>
+            <if test="bean.lastLoginTime != null">
+                last_login_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bean.nickName!=null">
+                #{bean.nickName},
+            </if>
+            <if test="bean.avatar!=null">
+                #{bean.avatar},
+            </if>
+            <if test="bean.phone!=null">
+                #{bean.phone},
+            </if>
+            <if test="bean.password!=null">
+                #{bean.password},
+            </if>
+            <if test="bean.profession!=null">
+                #{bean.profession},
+            </if>
+            <if test="bean.introduction!=null">
+                #{bean.introduction},
+            </if>
+            <if test="bean.editorType!=null">
+                #{bean.editorType},
+            </if>
+            <if test="bean.roleType!=null">
+                #{bean.roleType},
+            </if>
+            <if test="bean.status!=null">
+                #{bean.status},
+            </if>
+            <if test="bean.createTime!=null">
+                #{bean.createTime},
+            </if>
+            <if test="bean.lastLoginTime!=null">
+                #{bean.lastLoginTime},
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 插入或者更新 （匹配有值的字段）-->
+    <insert id="insertOrUpdate" parameterType="com.happyblog.entity.po.BlogTeamUser">
+        INSERT INTO blog_team_user
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bean.userId != null">
+                user_id,
+            </if>
+            <if test="bean.nickName != null">
+                nick_name,
+            </if>
+            <if test="bean.avatar != null">
+                avatar,
+            </if>
+            <if test="bean.phone != null">
+                phone,
+            </if>
+            <if test="bean.password != null">
+                password,
+            </if>
+            <if test="bean.profession != null">
+                profession,
+            </if>
+            <if test="bean.introduction != null">
+                introduction,
+            </if>
+            <if test="bean.editorType != null">
+                editor_type,
+            </if>
+            <if test="bean.roleType != null">
+                role_type,
+            </if>
+            <if test="bean.status != null">
+                status,
+            </if>
+            <if test="bean.createTime != null">
+                create_time,
+            </if>
+            <if test="bean.lastLoginTime != null">
+                last_login_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bean.userId!=null">
+                #{bean.userId},
+            </if>
+            <if test="bean.nickName!=null">
+                #{bean.nickName},
+            </if>
+            <if test="bean.avatar!=null">
+                #{bean.avatar},
+            </if>
+            <if test="bean.phone!=null">
+                #{bean.phone},
+            </if>
+            <if test="bean.password!=null">
+                #{bean.password},
+            </if>
+            <if test="bean.profession!=null">
+                #{bean.profession},
+            </if>
+            <if test="bean.introduction!=null">
+                #{bean.introduction},
+            </if>
+            <if test="bean.editorType!=null">
+                #{bean.editorType},
+            </if>
+            <if test="bean.roleType!=null">
+                #{bean.roleType},
+            </if>
+            <if test="bean.status!=null">
+                #{bean.status},
+            </if>
+            <if test="bean.createTime!=null">
+                #{bean.createTime},
+            </if>
+            <if test="bean.lastLoginTime!=null">
+                #{bean.lastLoginTime},
+            </if>
+        </trim>
+        on DUPLICATE key update
+        <trim prefix="" suffix="" suffixOverrides=",">
+            <if test="bean.nickName!=null">
+                nick_name = VALUES(nick_name),
+            </if>
+            <if test="bean.avatar!=null">
+                avatar = VALUES(avatar),
+            </if>
+            <if test="bean.phone!=null">
+                phone = VALUES(phone),
+            </if>
+            <if test="bean.password!=null">
+                password = VALUES(password),
+            </if>
+            <if test="bean.profession!=null">
+                profession = VALUES(profession),
+            </if>
+            <if test="bean.introduction!=null">
+                introduction = VALUES(introduction),
+            </if>
+            <if test="bean.editorType!=null">
+                editor_type = VALUES(editor_type),
+            </if>
+            <if test="bean.roleType!=null">
+                role_type = VALUES(role_type),
+            </if>
+            <if test="bean.status!=null">
+                status = VALUES(status),
+            </if>
+            <if test="bean.createTime!=null">
+                create_time = VALUES(create_time),
+            </if>
+            <if test="bean.lastLoginTime!=null">
+                last_login_time = VALUES(last_login_time),
+            </if>
+        </trim>
+    </insert>
+
+    <!-- 添加 （批量插入）-->
+    <insert id="insertBatch" parameterType="com.happyblog.entity.po.BlogTeamUser" useGeneratedKeys="true" keyProperty="userId">
+        INSERT INTO blog_team_user(nick_name,avatar,phone,password,profession,introduction,editor_type,role_type,status,create_time,last_login_time)values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.nickName},#{item.avatar},#{item.phone},#{item.password},#{item.profession},#{item.introduction},#{item.editorType},#{item.roleType},#{item.status},#{item.createTime},#{item.lastLoginTime}
+            )
+        </foreach>
+    </insert>
+
+    <!-- 批量新增修改 （批量插入）-->
+    <insert id="insertOrUpdateBatch" parameterType="com.happyblog.entity.po.BlogTeamUser">
+        INSERT INTO blog_team_user(nick_name,avatar,phone,password,profession,introduction,editor_type,role_type,status,create_time,last_login_time)values
+        <foreach collection="list" item="item" separator=",">
+            (
+            #{item.nickName},#{item.avatar},#{item.phone},#{item.password},#{item.profession},#{item.introduction},#{item.editorType},#{item.roleType},#{item.status},#{item.createTime},#{item.lastLoginTime}
+            )
+        </foreach>
+        on DUPLICATE key update
+        nick_name = VALUES(nick_name),
+        avatar = VALUES(avatar),
+        phone = VALUES(phone),
+        password = VALUES(password),
+        profession = VALUES(profession),
+        introduction = VALUES(introduction),
+        editor_type = VALUES(editor_type),
+        role_type = VALUES(role_type),
+        status = VALUES(status),
+        create_time = VALUES(create_time),
+        last_login_time = VALUES(last_login_time)
+    </insert>
+
+    <!-- 根据Phone修改-->
+    <update id="updateByPhone" parameterType="com.happyblog.entity.po.BlogTeamUser">
+        UPDATE blog_team_user
+        <set>
+            <if test="bean.nickName != null">
+                nick_name = #{bean.nickName},
+            </if>
+            <if test="bean.avatar != null">
+                avatar = #{bean.avatar},
+            </if>
+            <if test="bean.password != null">
+                password = #{bean.password},
+            </if>
+            <if test="bean.profession != null">
+                profession = #{bean.profession},
+            </if>
+            <if test="bean.introduction != null">
+                introduction = #{bean.introduction},
+            </if>
+            <if test="bean.editorType != null">
+                editor_type = #{bean.editorType},
+            </if>
+            <if test="bean.roleType != null">
+                role_type = #{bean.roleType},
+            </if>
+            <if test="bean.status != null">
+                status = #{bean.status},
+            </if>
+            <if test="bean.createTime != null">
+                create_time = #{bean.createTime},
+            </if>
+            <if test="bean.lastLoginTime != null">
+                last_login_time = #{bean.lastLoginTime},
+            </if>
+        </set>
+        where phone=#{phone}
+    </update>
+
+    <!-- 根据Phone删除-->
+    <delete id="deleteByPhone">
+        delete
+        from blog_team_user
+        where phone = #{phone}
+    </delete>
+
+    <!-- 根据PrimaryKey获取对象-->
+    <select id="selectByPhone" resultMap="base_result_map">
+        select
+        <include refid="base_column_list"/>
+        from blog_team_user where phone=#{phone}
+    </select>
+
+    <!-- 根据UserId修改-->
+    <update id="updateByUserId" parameterType="com.happyblog.entity.po.BlogTeamUser">
+        UPDATE blog_team_user
+        <set>
+            <if test="bean.nickName != null">
+                nick_name = #{bean.nickName},
+            </if>
+            <if test="bean.avatar != null">
+                avatar = #{bean.avatar},
+            </if>
+            <if test="bean.phone != null">
+                phone = #{bean.phone},
+            </if>
+            <if test="bean.password != null">
+                password = #{bean.password},
+            </if>
+            <if test="bean.profession != null">
+                profession = #{bean.profession},
+            </if>
+            <if test="bean.introduction != null">
+                introduction = #{bean.introduction},
+            </if>
+            <if test="bean.editorType != null">
+                editor_type = #{bean.editorType},
+            </if>
+            <if test="bean.roleType != null">
+                role_type = #{bean.roleType},
+            </if>
+            <if test="bean.status != null">
+                status = #{bean.status},
+            </if>
+            <if test="bean.createTime != null">
+                create_time = #{bean.createTime},
+            </if>
+            <if test="bean.lastLoginTime != null">
+                last_login_time = #{bean.lastLoginTime},
+            </if>
+        </set>
+        where user_id=#{userId}
+    </update>
+
+    <!-- 根据UserId删除-->
+    <delete id="deleteByUserId">
+        delete
+        from blog_team_user
+        where user_id = #{userId}
+    </delete>
+
+    <!-- 根据PrimaryKey获取对象-->
+    <select id="selectByUserId" resultMap="base_result_map">
+        select
+        <include refid="base_column_list"/>
+        from blog_team_user where user_id=#{userId}
+    </select>
+
+</mapper>
